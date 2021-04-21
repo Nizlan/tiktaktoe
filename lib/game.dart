@@ -24,7 +24,7 @@ class _GameState extends State<Game> {
     setState(() {
       List f = [];
       for (var i = 0; i < fieldsNumber * fieldsNumber; i++) {
-        f.add(Field(i ~/ fieldsNumber, i % fieldsNumber, 'ы', true));
+        f.add(Field(i ~/ fieldsNumber, i % fieldsNumber, ' ', true));
       }
       fields = f;
       setState(() {
@@ -172,7 +172,7 @@ class _GameState extends State<Game> {
   @override
   void initState() {
     for (var i = 0; i < fieldsNumber * fieldsNumber; i++) {
-      fields.add(Field(i ~/ fieldsNumber, i % fieldsNumber, 'ы', true));
+      fields.add(Field(i ~/ fieldsNumber, i % fieldsNumber, ' ', true));
     }
     super.initState();
   }
@@ -180,52 +180,66 @@ class _GameState extends State<Game> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          Container(
-            width: 600,
-            height: 600,
-            child: GridView.count(
-              crossAxisCount: 3,
-              children: List.generate(
-                9,
-                (index) {
-                  return Container(
-                    width: MediaQuery.of(context).size.width / 3,
-                    height: MediaQuery.of(context).size.height / 3,
-                    decoration:
-                        BoxDecoration(border: Border.all(color: Colors.black)),
-                    child: Center(
-                      child: GestureDetector(
-                          onTap: () => setState(() {
-                                if (fields[index].isEditable) {
-                                  fields[index].isEditable = false;
-                                  if (player == 'cross') {
-                                    fields[index].state = 'X';
-                                    player = 'zero';
-                                  } else {
-                                    fields[index].state = 'O';
-                                    player = 'cross';
-                                  }
-                                }
-                                isOver();
-                              }),
-                          child: Container(
-                            width: double.infinity,
-                            height: double.infinity,
-                            child: Text(
-                              '${fields[index].state}',
-                              style: TextStyle(fontSize: 60),
-                            ),
-                          )),
-                    ),
-                  );
-                },
+      body: Center(
+        child: Column(
+          children: [
+            Container(
+              padding: EdgeInsets.all(20),
+              child: Text(
+                'Tik tak toe',
+                style: TextStyle(fontSize: 30),
               ),
             ),
-          ),
-          TextButton(onPressed: toStart, child: Text('Обнулить')),
-        ],
+            Container(
+              width: 600,
+              height: 600,
+              child: GridView.count(
+                crossAxisCount: 3,
+                children: List.generate(
+                  9,
+                  (index) {
+                    return Container(
+                      width: MediaQuery.of(context).size.width / 3,
+                      height: MediaQuery.of(context).size.height / 3,
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.black)),
+                      child: Center(
+                        child: InkWell(
+                            onTap: () => setState(() {
+                                  if (fields[index].isEditable) {
+                                    fields[index].isEditable = false;
+                                    if (player == 'cross') {
+                                      fields[index].state = 'X';
+                                      player = 'zero';
+                                    } else {
+                                      fields[index].state = 'O';
+                                      player = 'cross';
+                                    }
+                                  }
+                                  isOver();
+                                }),
+                            child: Container(
+                              alignment: Alignment.center,
+                              padding: EdgeInsets.all(30),
+                              child: Text(
+                                '${fields[index].state}',
+                                style: TextStyle(fontSize: 100),
+                              ),
+                            )),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+            Container(
+              padding: EdgeInsets.all(20),
+              child: TextButton(
+                  onPressed: toStart,
+                  child: Text('Обнулить', style: TextStyle(fontSize: 25))),
+            ),
+          ],
+        ),
       ),
     );
   }
